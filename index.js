@@ -1,18 +1,15 @@
 const express = require("express");
-const testRoutes = require("./routes/test"); // Import the test routes
-const bestRoutes = require("./routes/best");
+const signup = require("./routes/signup"); // Import the test routes
 //const serverless = require("serverless-http"); // For serverless deployment on Vercel
 const app = express();
+const db = require("./config/database");
+db.connect();
 
 app.use(express.json()); // Middleware to parse JSON requests
 
 // Register test routes
-app.use("/", testRoutes);  // Routes will be prefixed with /test
-app.use("/", bestRoutes);  // Routes will be prefixed with /test
+app.use("/", signup);
 
-
-// Export the app as a serverless function
-//module.exports.handler = serverless(app);
 app.listen(3000, () => {
     console.log("App is running")
 })
