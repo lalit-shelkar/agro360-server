@@ -1,6 +1,6 @@
 exports.signup = async (req, res) => {
     return res.json({
         success: true,
-        message: "Your server is up and running 222222 ...",
+        message: "Server is up and running! controller route working fine.",
     });
 }

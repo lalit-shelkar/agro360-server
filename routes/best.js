@@ -1,13 +1,9 @@
 const express = require("express");
 const router = express.Router();
-
+const { signup } = require("../controller/User");
 // Define a GET route for /test
-router.get("/best", (req, res) => {
-    return res.json({
-        success: true,
-        message: "Server is up and running! best route working fine.",
-    });
-});
+router.get("/best", signup);
+
 
 router.get("/best1", (req, res) => {
     return res.json({
