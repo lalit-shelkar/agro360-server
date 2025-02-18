@@ -12,6 +12,10 @@
             "dest": "/index.js"
         },
         {
+            "src": "/best",
+            "dest": "/index.js"
+        },
+        {
             "src": "/(.*)",
             "dest": "/index.js"
         }
