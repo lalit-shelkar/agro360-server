@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     district: { type: String, required: true },
     taluka: { type: String, required: true },
     village: { type: String, required: true },
+    pin: { type: String, required: true },
     createdJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
     appliedJobs: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Job' }],
     otp: { type: String }, // OTP for verification (stored as a string)

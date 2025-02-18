@@ -1,29 +1,35 @@
-const { USER } = require('../model/usermodel');
-const crypto = require('crypto');
-const axios = require('axios');
-const otpStorage = {};  // Temporary in-memory OTP storage (You can replace this with Redis)
+const { USER } = require('../model/usermodel');  // Import the user model
+const crypto = require('crypto');                // To generate OTP
+const axios = require('axios');                  // For sending HTTP requests
 
-const generateOtp = (mobNumber) => {
-    const otp = crypto.randomInt(100000, 999999).toString();
-    const expiresAt = new Date(Date.now() + 5 * 60 * 1000);  // OTP expires in 5 minutes
-    return { otp, expiresAt };
+let otpStorage = {};  // Temporary storage for OTPs (Use Redis in production)
+
+// Function to generate OTP and expiration time
+const generateOtp = () => {
+    return {
+        otp: crypto.randomInt(100000, 999999).toString(),  // 6-digit OTP
+        expiresAt: new Date(Date.now() + 5 * 60 * 1000),   // OTP expires in 5 minutes
+    };
 };
 
+// Function to send OTP using Fast2SMS API
 const sendOtp = async (mobNumber, otp) => {
-    const url = 'https://www.fast2sms.com/dev/bulkV2';
-    const authorizationToken = 'il3UKqldKVCfbt0QAHUXC3c3BELxZEDkUOgo6sJZVbLLDU9C1GJ75RG6H0sW';
-
-    const params = {
-        authorization: authorizationToken,
-        route: 'otp',
-        variables_values: otp,
-        numbers: mobNumber,
-    };
-
     try {
+        const url = 'https://www.fast2sms.com/dev/bulkV2';
+        const authorizationToken = 'il3UKqldKVCfbt0QAHUXC3c3BELxZEDkUOgo6sJZVbLLDU9C1GJ75RG6H0sW';
+
+        const params = {
+            authorization: authorizationToken,
+            route: 'otp',
+            variables_values: otp,
+            numbers: mobNumber,
+        };
+
         const response = await axios.get(url, { params });
-        if (response.status !== 200) {
-            throw new Error('Failed to send OTP');
+        if (response.status === 200) {
+            console.log(`OTP sent successfully to ${mobNumber}`);
+        } else {
+            console.error('Failed to send OTP:', response.data);
         }
     } catch (error) {
         console.error('Error sending OTP via Fast2SMS:', error);
@@ -31,21 +37,21 @@ const sendOtp = async (mobNumber, otp) => {
     }
 };
 
-// Signup Controller (Generate OTP, send to user, and store temporarily)
+// **Signup Controller (Only sends OTP)**
 exports.signupController = async (req, res) => {
     try {
-        const { name, mobNumber, state, district, taluka, village } = req.body;
+        const { mobNumber } = req.body;
 
         // Check if user already exists
         const existingUser = await USER.findOne({ mobNumber });
         if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: 'User already exists try login with pin' });
         }
 
         // Generate OTP and expiration time
-        const { otp, expiresAt } = generateOtp(mobNumber);
+        const { otp, expiresAt } = generateOtp();
 
-        // Store OTP temporarily (You can use Redis instead)
+        // Store OTP temporarily (Use Redis in production)
         otpStorage[mobNumber] = { otp, expiresAt };
 
         // Send OTP
@@ -62,11 +68,15 @@ exports.signupController = async (req, res) => {
     }
 };
 
-
-// OTP Verification Controller
+// **OTP Verification Controller (Registers User with PIN)**
 exports.verifyOtpController = async (req, res) => {
     try {
-        const { mobNumber, otp } = req.body;
+        const { mobNumber, otp, name, state, district, taluka, village, pin } = req.body;
+
+        // Validate pin (must be a 4-digit number)
+        if (!/^\d{4}$/.test(pin)) {
+            return res.status(400).json({ message: 'PIN must be a 4-digit number' });
+        }
 
         // Check if OTP exists in memory (this is where Redis would come in for better persistence)
         const storedOtpData = otpStorage[mobNumber];
@@ -88,12 +98,13 @@ exports.verifyOtpController = async (req, res) => {
 
         // OTP is correct and not expired, now save user to the database
         const newUser = new USER({
-            name: req.body.name,
+            name,
             mobNumber,
-            state: req.body.state,
-            district: req.body.district,
-            taluka: req.body.taluka,
-            village: req.body.village,
+            state,
+            district,
+            taluka,
+            village,
+            pin, // Store 4-digit PIN for login
         });
 
         await newUser.save();
@@ -105,6 +116,44 @@ exports.verifyOtpController = async (req, res) => {
             message: 'OTP verified successfully. User registered.',
             userId: newUser._id,
         });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Something went wrong. Please try again later.' });
+    }
+};
+
+
+
+// **Login Controller (Authenticate User with PIN)**
+exports.loginController = async (req, res) => {
+    try {
+        const { mobNumber, pin } = req.body;
+
+        // Validate request
+        if (!mobNumber || !pin) {
+            return res.status(400).json({ message: 'Mobile number and PIN are required' });
+        }
+
+        // Find user by mobile number
+        const user = await USER.findOne({ mobNumber });
+
+        if (!user) {
+            return res.status(400).json({ message: 'User not found. Please sign up first.' });
+        }
+
+        // Check if entered PIN matches the stored PIN
+        if (user.pin !== pin) {
+            return res.status(400).json({ message: 'Invalid PIN. Please try again.' });
+        }
+
+        // Successful login
+        return res.status(200).json({
+            message: 'Login successful!',
+            userId: user._id,  // Returning user ID (optional)
+            name: user.name,
+            mobNumber: user.mobNumber,
+        });
+
     } catch (error) {
         console.error(error);
         return res.status(500).json({ message: 'Something went wrong. Please try again later.' });
