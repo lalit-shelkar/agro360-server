@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 // Define a GET route for /test
-router.get("/", (req, res) => {
+router.get("/test", (req, res) => {
     return res.json({
         success: true,
         message: "Server is up and running! Test route working fine.",
