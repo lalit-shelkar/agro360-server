@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const serverless = require("serverless-http");
 
 const dotenv = require("dotenv");
 dotenv.config();
@@ -9,8 +10,13 @@ const database = require("./config/database");
 database.connect();
 
 const PORT = process.env.PORT || 4000;
-app.use(express.json());
 
+
+//////
+const userRoutes = require("./routes/user");
+
+
+app.use(express.json());
 app.get("/", (req, res) => {
     return res.json({
         success: true,
@@ -18,7 +24,9 @@ app.get("/", (req, res) => {
     });
 });
 
-module.exports = app;
+app.use("/", userRoutes);
+
+module.exports = serverless(app);
 
 // app.listen(PORT, () => {
 //     console.log(`App is listening at ${PORT}`);
