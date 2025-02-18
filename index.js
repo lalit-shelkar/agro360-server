@@ -5,8 +5,8 @@ const app = express();
 
 app.use(express.json()); // Middleware to parse JSON requests
 
-// Register test route at the root level
-app.use("/", testRoutes);
+// Register test routes
+app.use("/test", testRoutes);  // Routes will be prefixed with /test
 
 // Export the app as a serverless function
-module.exports = serverless(app);
+module.exports.handler = serverless(app);
