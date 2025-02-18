@@ -1,33 +1,12 @@
 const express = require("express");
+const testRoutes = require("./routes/test"); // Import the test routes
+const serverless = require("serverless-http"); // For serverless deployment on Vercel
 const app = express();
-const serverless = require("serverless-http");
 
-const dotenv = require("dotenv");
-dotenv.config();
+app.use(express.json()); // Middleware to parse JSON requests
 
-//database connection
-const database = require("./config/database");
-database.connect();
+// Register test route at the root level
+app.use("/", testRoutes);
 
-const PORT = process.env.PORT || 4000;
-
-
-//////
-const userRoutes = require("./routes/user");
-
-
-app.use(express.json());
-app.get("/", (req, res) => {
-    return res.json({
-        success: true,
-        message: "Your server is up and running ...",
-    });
-});
-
-app.use("/", userRoutes);
-
+// Export the app as a serverless function
 module.exports = serverless(app);
-
-// app.listen(PORT, () => {
-//     console.log(`App is listening at ${PORT}`);
-// });
