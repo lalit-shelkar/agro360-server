@@ -7,6 +7,8 @@ app.use(express.json()); // Middleware to parse JSON requests
 
 // Register test routes
 app.use("/", testRoutes);  // Routes will be prefixed with /test
+app.use("/", testRoutes);  // Routes will be prefixed with /test
+
 
 // Export the app as a serverless function
 //module.exports.handler = serverless(app);

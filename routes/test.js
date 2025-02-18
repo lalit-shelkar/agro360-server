@@ -9,4 +9,11 @@ router.get("/testy", (req, res) => {
     });
 });
 
+router.get("/testy1", (req, res) => {
+    return res.json({
+        success: true,
+        message: "Server is up and running! Test route working fine.",
+    });
+});
+
 module.exports = router; // Export the router to be used in index.js
