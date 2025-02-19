@@ -7,7 +7,7 @@ const { signupController } = require("./controller/signupcontroller");
 db.connect();
 require("dotenv").config();
 
-const { PORT } = process.env;
+const PORT = 2000;
 app.use(express.json()); // Middleware to parse JSON requests
 
 app.get("/", (req, res) => {
@@ -21,4 +21,3 @@ app.listen(PORT, () => {
     console.log("App is running")
 })
 
-module.exports = app; 
