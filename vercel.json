@@ -8,6 +8,10 @@
     ],
     "routes": [
         {
+            "src": "/controller",
+            "dest": "index.js"
+        },
+        {
             "src": "/(.*)",
             "dest": "index.js"
         }
