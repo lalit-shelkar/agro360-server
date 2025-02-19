@@ -15,7 +15,7 @@ const PORT = 2000;
 app.get("/", (req, res) => {
     res.send("Welcome to Agro 360 v2");
 });
-
+console.log("Signup Controller:", signupcontroller);
 // Register test routes
 app.post("/signup", signupcontroller);
 
