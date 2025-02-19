@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 require("dotenv").config();
 
-const { MONGODB_URL } = process.env;
+const MONGODB_URL = "mongodb+srv://lalitshelkar24:agro360@cluster1.6dkom.mongodb.net/";
 
 exports.connect = () => {
     mongoose
