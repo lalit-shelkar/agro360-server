@@ -11,7 +11,7 @@ const { PORT } = process.env;
 app.use(express.json()); // Middleware to parse JSON requests
 
 app.get("/", (req, res) => {
-    res.send("Welcome to pet care App v2");
+    res.send("Welcome to Agro 360 v2");
 });
 
 // Register test routes
