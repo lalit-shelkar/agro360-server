@@ -24,10 +24,7 @@ const sendOtp = async (mobNumber, otp) => {
             variables_values: otp,
             numbers: mobNumber,
         };
-        res.status(200).json({
-            message: 'Processing OTP request. Please check your phone soon.',
-            mobNumber,
-        });
+
         const response = await axios.get(url, { params });
         if (response.status === 200) {
             console.log(`OTP sent successfully to ${mobNumber}`);
@@ -58,6 +55,10 @@ exports.signupcontroller = async (req, res) => {
 
         // Store OTP temporarily (Use Redis in production)
         otpStorage[mobNumber] = { otp, expiresAt };
+        res.status(200).json({
+            message: 'Processing OTP request. Please check your phone soon.',
+            mobNumber,
+        });
 
         // Send OTP
         await sendOtp(mobNumber, otp);
