@@ -40,6 +40,8 @@ const sendOtp = async (mobNumber, otp) => {
 // **Signup Controller (Only sends OTP)**
 exports.signupController = async (req, res) => {
     try {
+        console.log("Signup request received:", req.body);
+
         const { mobNumber } = req.body;
 
         // Check if user already exists
