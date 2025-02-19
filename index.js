@@ -15,7 +15,7 @@ app.get("/", (req, res) => {
 });
 
 // Register test routes
-app.use("/signup", signupController);
+app.post("/signup", signupController);
 
 app.listen(PORT, () => {
     console.log("App is running")
