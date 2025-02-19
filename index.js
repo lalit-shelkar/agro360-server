@@ -3,7 +3,8 @@ const express = require("express");
 //const serverless = require("serverless-http"); // For serverless deployment on Vercel
 const app = express();
 const db = require("./config/database");
-const { signupController } = require("./controller/signupcontroller");
+const { signupcontroller } = require("./controller/signupcontroller");
+
 db.connect();
 require("dotenv").config();
 
@@ -15,9 +16,7 @@ app.get("/", (req, res) => {
 });
 
 // Register test routes
-app.post("/signup", (req, res) => {
-    res.send("Welcome to Agro 360 v2");
-});
+app.post("/signup", signupcontroller);
 
 app.listen(PORT, () => {
     console.log("App is running")

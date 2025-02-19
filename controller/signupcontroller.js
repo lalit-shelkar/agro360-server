@@ -24,7 +24,10 @@ const sendOtp = async (mobNumber, otp) => {
             variables_values: otp,
             numbers: mobNumber,
         };
-
+        res.status(200).json({
+            message: 'Processing OTP request. Please check your phone soon.',
+            mobNumber,
+        });
         const response = await axios.get(url, { params });
         if (response.status === 200) {
             console.log(`OTP sent successfully to ${mobNumber}`);
@@ -38,7 +41,7 @@ const sendOtp = async (mobNumber, otp) => {
 };
 
 // **Signup Controller (Only sends OTP)**
-exports.signupController = async (req, res) => {
+exports.signupcontroller = async (req, res) => {
     try {
         console.log("Signup request received:", req.body);
 
