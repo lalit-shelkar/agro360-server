@@ -50,15 +50,16 @@ exports.signupcontroller = async (req, res) => {
             return res.status(400).json({ message: 'User already exists try login with pin' });
         }
 
+        res.status(200).json({
+            message: 'Processing OTP request. Please check your phone soon.',
+            mobNumber,
+        });
         // Generate OTP and expiration time
         const { otp, expiresAt } = generateOtp();
 
         // Store OTP temporarily (Use Redis in production)
         otpStorage[mobNumber] = { otp, expiresAt };
-        res.status(200).json({
-            message: 'Processing OTP request. Please check your phone soon.',
-            mobNumber,
-        });
+
 
         // Send OTP
         await sendOtp(mobNumber, otp);
