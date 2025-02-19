@@ -10,8 +10,5 @@ app.use(express.json()); // Middleware to parse JSON requests
 // Register test routes
 app.use("/api", signup);
 
-app.listen(3000, () => {
-    console.log("App is running")
-})
 
-//module.exports = app; 
+module.exports = app; 
