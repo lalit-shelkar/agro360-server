@@ -15,7 +15,9 @@ app.get("/", (req, res) => {
 });
 
 // Register test routes
-app.post("/signup", signupController);
+app.post("/signup", (req, res) => {
+    res.send("Welcome to Agro 360 v2");
+});
 
 app.listen(PORT, () => {
     console.log("App is running")
