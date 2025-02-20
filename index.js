@@ -9,22 +9,6 @@ const db = require("./config/database");
 //const { signupcontroller } = require("./controller/signupcontroller");
 
 db.connect();
-
-
-//const PORT = 2000;
-// Middleware to parse JSON requests
-app.post("/signup", signupcontroller);
-app.get("/", (req, res) => {
-    res.send("Welcome to Agro 360 v3");
-});
-console.log("Signup Controller:", signupcontroller);
-// Register test routes
-
-
-app.listen(process.env.PORT, () => {
-    console.log("App is running on port")
-})
-
 const signupcontroller = async (req, res) => {
     try {
         console.log("Signup request received:", req.body);
@@ -61,3 +45,18 @@ const signupcontroller = async (req, res) => {
         return res.status(500).json({ message: 'Something went wrong. Please try again later.' });
     }
 };
+
+//const PORT = 2000;
+// Middleware to parse JSON requests
+app.post("/signup", signupcontroller);
+app.get("/", (req, res) => {
+    res.send("Welcome to Agro 360 v3");
+});
+console.log("Signup Controller:", signupcontroller);
+// Register test routes
+
+
+app.listen(process.env.PORT, () => {
+    console.log("App is running on port")
+})
+
