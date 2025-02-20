@@ -13,7 +13,9 @@ db.connect();
 
 //const PORT = 2000;
 // Middleware to parse JSON requests
-app.post("/signup", signupcontroller);
+app.post("/signup", (req, res) => {
+    res.send("Welcome to Agro 360 v3");
+});
 app.get("/", (req, res) => {
     res.send("Welcome to Agro 360 v3");
 });
