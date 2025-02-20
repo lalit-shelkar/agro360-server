@@ -13,13 +13,13 @@ db.connect();
 
 //const PORT = 2000;
 // Middleware to parse JSON requests
-
+app.post("/signup", signupcontroller);
 app.get("/", (req, res) => {
     res.send("Welcome to Agro 360 v3");
 });
 console.log("Signup Controller:", signupcontroller);
 // Register test routes
-app.post("/signup", signupcontroller);
+
 
 app.listen(process.env.PORT, () => {
     console.log("App is running on port")
